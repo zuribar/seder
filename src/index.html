@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>סדר - מנהל מדיה</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">📂</span>
+        <h1>סדר</h1>
+        <span class="subtitle">מנהל מדיה אוטומטי</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+
+      <!-- Step 1: Select Source -->
+      <section id="step-source" class="step active">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h2>בחר תיקייה לסריקה</h2>
+          <p>בחר את התיקייה שאתה רוצה לסרוק ולארגן</p>
+          <button id="btn-select-source" class="btn btn-primary btn-large">
+            <span class="btn-icon">📁</span>
+            בחר תיקייה
+          </button>
+          <div id="source-path" class="path-display hidden"></div>
+          <button id="btn-scan" class="btn btn-accent hidden">
+            <span class="btn-icon">🔍</span>
+            התחל סריקה
+          </button>
+        </div>
+      </section>
+
+      <!-- Scanning Progress -->
+      <section id="step-scanning" class="step hidden">
+        <div class="step-card">
+          <div class="spinner"></div>
+          <h2>סורק קבצים...</h2>
+          <p id="scan-status">מחפש קבצים...</p>
+          <div class="progress-bar">
+            <div id="scan-progress-bar" class="progress-fill"></div>
+          </div>
+          <p id="scan-count" class="scan-count">0 קבצים נמצאו</p>
+        </div>
+      </section>
+
+      <!-- Step 2: Scan Results -->
+      <section id="step-results" class="step hidden">
+        <div class="results-header">
+          <h2>תוצאות סריקה</h2>
+          <div class="results-summary">
+            <div class="summary-item">
+              <span class="summary-value" id="total-files">0</span>
+              <span class="summary-label">קבצים</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-value" id="total-size">0</span>
+              <span class="summary-label">גודל כולל</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-value" id="total-duplicates">0</span>
+              <span class="summary-label">כפילויות</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-value" id="total-categories">0</span>
+              <span class="summary-label">קטגוריות</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Cards -->
+        <div id="categories-grid" class="categories-grid"></div>
+
+        <!-- Duplicates Section -->
+        <div id="duplicates-section" class="duplicates-section hidden">
+          <div class="duplicates-header">
+            <h3>כפילויות שנמצאו</h3>
+            <div class="duplicates-actions">
+              <button id="btn-auto-select-dups" class="btn btn-secondary btn-small">
+                <span class="btn-icon">⚡</span>
+                סמן כפילויות אוטומטית
+              </button>
+              <button id="btn-delete-all-dups" class="btn btn-danger btn-small">
+                <span class="btn-icon">🗑️</span>
+                מחק את כל הכפילויות
+              </button>
+              <button id="btn-delete-selected" class="btn btn-danger btn-small hidden">
+                <span class="btn-icon">🗑️</span>
+                מחק נבחרים (<span id="selected-count">0</span>)
+              </button>
+            </div>
+          </div>
+          <p class="duplicates-help">סמן את הקבצים שאתה רוצה <strong>למחוק</strong>. הקובץ הראשון בכל קבוצה הוא המקורי (לא מסומן).</p>
+          <div id="duplicates-list" class="duplicates-list"></div>
+        </div>
+
+        <!-- Organize Actions -->
+        <div class="organize-actions">
+          <h3>ארגון אוטומטי</h3>
+          <p>בחר תיקיית יעד והקבצים יאורגנו אוטומטית לתיקיות לפי קטגוריה</p>
+
+          <div class="organize-options">
+            <label class="radio-option">
+              <input type="radio" name="organize-mode" value="copy" checked>
+              <span class="radio-custom"></span>
+              <div>
+                <strong>העתק</strong>
+                <small>העתק קבצים לתיקייה מסודרת (הקבצים המקוריים נשארים)</small>
+              </div>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="organize-mode" value="move">
+              <span class="radio-custom"></span>
+              <div>
+                <strong>העבר</strong>
+                <small>העבר קבצים לתיקייה מסודרת (הקבצים המקוריים יוסרו)</small>
+              </div>
+            </label>
+          </div>
+
+          <div class="organize-buttons">
+            <button id="btn-select-dest" class="btn btn-primary">
+              <span class="btn-icon">📂</span>
+              בחר תיקיית יעד
+            </button>
+            <div id="dest-path" class="path-display hidden"></div>
+            <button id="btn-organize" class="btn btn-accent btn-large hidden">
+              <span class="btn-icon">✨</span>
+              ארגן עכשיו!
+            </button>
+          </div>
+        </div>
+
+        <!-- Back button -->
+        <button id="btn-back-source" class="btn btn-secondary">
+          <span class="btn-icon">↩️</span>
+          סרוק תיקייה אחרת
+        </button>
+      </section>
+
+      <!-- Step 3: Organizing Progress -->
+      <section id="step-organizing" class="step hidden">
+        <div class="step-card">
+          <div class="spinner"></div>
+          <h2>מארגן קבצים...</h2>
+          <p id="organize-status">מעביר קבצים...</p>
+          <div class="progress-bar">
+            <div id="organize-progress-bar" class="progress-fill"></div>
+          </div>
+          <p id="organize-count" class="scan-count">0 / 0</p>
+        </div>
+      </section>
+
+      <!-- Step 4: Done -->
+      <section id="step-done" class="step hidden">
+        <div class="step-card done-card">
+          <div class="done-icon">✅</div>
+          <h2>הארגון הושלם!</h2>
+          <div id="done-summary" class="done-summary"></div>
+          <div class="done-buttons">
+            <button id="btn-open-dest" class="btn btn-primary">
+              <span class="btn-icon">📂</span>
+              פתח תיקיית יעד
+            </button>
+            <button id="btn-restart" class="btn btn-secondary">
+              <span class="btn-icon">🔄</span>
+              סרוק תיקייה נוספת
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
