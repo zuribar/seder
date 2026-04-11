@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self';">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>סדר - מנהל מדיה</title>
+  <title>SortBox - Media Organizer</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,8 +13,8 @@
     <header class="header">
       <div class="logo">
         <span class="logo-icon">📂</span>
-        <h1>סדר</h1>
-        <span class="subtitle">מנהל מדיה אוטומטי</span>
+        <h1>SortBox</h1>
+        <span class="subtitle">Media Organizer</span>
       </div>
     </header>
 
@@ -25,16 +25,16 @@
       <section id="step-source" class="step active">
         <div class="step-card">
           <div class="step-number">1</div>
-          <h2>בחר תיקייה לסריקה</h2>
-          <p>בחר את התיקייה שאתה רוצה לסרוק ולארגן</p>
+          <h2>Select a Folder to Scan</h2>
+          <p>Choose the folder you want to scan and organize</p>
           <button id="btn-select-source" class="btn btn-primary btn-large">
             <span class="btn-icon">📁</span>
-            בחר תיקייה
+            Select Folder
           </button>
           <div id="source-path" class="path-display hidden"></div>
           <button id="btn-scan" class="btn btn-accent hidden">
             <span class="btn-icon">🔍</span>
-            התחל סריקה
+            Start Scan
           </button>
         </div>
       </section>
@@ -43,35 +43,35 @@
       <section id="step-scanning" class="step hidden">
         <div class="step-card">
           <div class="spinner"></div>
-          <h2>סורק קבצים...</h2>
-          <p id="scan-status">מחפש קבצים...</p>
+          <h2>Scanning files...</h2>
+          <p id="scan-status">Searching for files...</p>
           <div class="progress-bar">
             <div id="scan-progress-bar" class="progress-fill"></div>
           </div>
-          <p id="scan-count" class="scan-count">0 קבצים נמצאו</p>
+          <p id="scan-count" class="scan-count">0 files found</p>
         </div>
       </section>
 
       <!-- Step 2: Scan Results -->
       <section id="step-results" class="step hidden">
         <div class="results-header">
-          <h2>תוצאות סריקה</h2>
+          <h2>Scan Results</h2>
           <div class="results-summary">
             <div class="summary-item">
               <span class="summary-value" id="total-files">0</span>
-              <span class="summary-label">קבצים</span>
+              <span class="summary-label">Files</span>
             </div>
             <div class="summary-item">
               <span class="summary-value" id="total-size">0</span>
-              <span class="summary-label">גודל כולל</span>
+              <span class="summary-label">Total Size</span>
             </div>
             <div class="summary-item">
               <span class="summary-value" id="total-duplicates">0</span>
-              <span class="summary-label">כפילויות</span>
+              <span class="summary-label">Duplicates</span>
             </div>
             <div class="summary-item">
               <span class="summary-value" id="total-categories">0</span>
-              <span class="summary-label">קטגוריות</span>
+              <span class="summary-label">Categories</span>
             </div>
           </div>
         </div>
@@ -82,46 +82,46 @@
         <!-- Duplicates Section -->
         <div id="duplicates-section" class="duplicates-section hidden">
           <div class="duplicates-header">
-            <h3>כפילויות שנמצאו</h3>
+            <h3>Duplicates Found</h3>
             <div class="duplicates-actions">
               <button id="btn-auto-select-dups" class="btn btn-secondary btn-small">
                 <span class="btn-icon">⚡</span>
-                סמן כפילויות אוטומטית
+                Auto-Select Duplicates
               </button>
               <button id="btn-delete-all-dups" class="btn btn-danger btn-small">
                 <span class="btn-icon">🗑️</span>
-                מחק את כל הכפילויות
+                Delete All Duplicates
               </button>
               <button id="btn-delete-selected" class="btn btn-danger btn-small hidden">
                 <span class="btn-icon">🗑️</span>
-                מחק נבחרים (<span id="selected-count">0</span>)
+                Delete Selected (<span id="selected-count">0</span>)
               </button>
             </div>
           </div>
-          <p class="duplicates-help">סמן את הקבצים שאתה רוצה <strong>למחוק</strong>. הקובץ הראשון בכל קבוצה הוא המקורי (לא מסומן).</p>
+          <p class="duplicates-help">Select the files you want to <strong>delete</strong>. The first file in each group is the original (not selected).</p>
           <div id="duplicates-list" class="duplicates-list"></div>
         </div>
 
         <!-- Organize Actions -->
         <div class="organize-actions">
-          <h3>ארגון אוטומטי</h3>
-          <p>בחר תיקיית יעד והקבצים יאורגנו אוטומטית לתיקיות לפי קטגוריה</p>
+          <h3>Auto-Organize</h3>
+          <p>Choose a destination folder and files will be automatically organized into folders by category</p>
 
           <div class="organize-options">
             <label class="radio-option">
               <input type="radio" name="organize-mode" value="copy" checked>
               <span class="radio-custom"></span>
               <div>
-                <strong>העתק</strong>
-                <small>העתק קבצים לתיקייה מסודרת (הקבצים המקוריים נשארים)</small>
+                <strong>Copy</strong>
+                <small>Copy files to organized folders (originals stay in place)</small>
               </div>
             </label>
             <label class="radio-option">
               <input type="radio" name="organize-mode" value="move">
               <span class="radio-custom"></span>
               <div>
-                <strong>העבר</strong>
-                <small>העבר קבצים לתיקייה מסודרת (הקבצים המקוריים יוסרו)</small>
+                <strong>Move</strong>
+                <small>Move files to organized folders (originals are removed)</small>
               </div>
             </label>
           </div>
@@ -129,12 +129,12 @@
           <div class="organize-buttons">
             <button id="btn-select-dest" class="btn btn-primary">
               <span class="btn-icon">📂</span>
-              בחר תיקיית יעד
+              Select Destination
             </button>
             <div id="dest-path" class="path-display hidden"></div>
             <button id="btn-organize" class="btn btn-accent btn-large hidden">
               <span class="btn-icon">✨</span>
-              ארגן עכשיו!
+              Organize Now!
             </button>
           </div>
         </div>
@@ -142,7 +142,7 @@
         <!-- Back button -->
         <button id="btn-back-source" class="btn btn-secondary">
           <span class="btn-icon">↩️</span>
-          סרוק תיקייה אחרת
+          Scan Another Folder
         </button>
       </section>
 
@@ -150,8 +150,8 @@
       <section id="step-organizing" class="step hidden">
         <div class="step-card">
           <div class="spinner"></div>
-          <h2>מארגן קבצים...</h2>
-          <p id="organize-status">מעביר קבצים...</p>
+          <h2>Organizing files...</h2>
+          <p id="organize-status">Moving files...</p>
           <div class="progress-bar">
             <div id="organize-progress-bar" class="progress-fill"></div>
           </div>
@@ -163,16 +163,16 @@
       <section id="step-done" class="step hidden">
         <div class="step-card done-card">
           <div class="done-icon">✅</div>
-          <h2>הארגון הושלם!</h2>
+          <h2>Organization Complete!</h2>
           <div id="done-summary" class="done-summary"></div>
           <div class="done-buttons">
             <button id="btn-open-dest" class="btn btn-primary">
               <span class="btn-icon">📂</span>
-              פתח תיקיית יעד
+              Open Destination
             </button>
             <button id="btn-restart" class="btn btn-secondary">
               <span class="btn-icon">🔄</span>
-              סרוק תיקייה נוספת
+              Scan Another Folder
             </button>
           </div>
         </div>

@@ -70,19 +70,19 @@ $('btn-scan').addEventListener('click', async () => {
   let fileCount = 0;
   window.api.onScanProgress((data) => {
     fileCount = data.count;
-    $('scan-count').textContent = `${fileCount} קבצים נמצאו`;
+    $('scan-count').textContent = `${fileCount} files found`;
     $('scan-status').textContent = data.current
       ? data.current.length > 60
         ? '...' + data.current.slice(-60)
         : data.current
-      : 'סורק...';
+      : 'Scanning...';
   });
 
   try {
     scanResults = await window.api.scanFolder(sourcePath);
     showResults();
   } catch (err) {
-    alert('שגיאה בסריקה: ' + err.message);
+    alert('Scan error: ' + err.message);
     showStep('source');
     isOperationRunning = false;
   }
@@ -114,8 +114,8 @@ function showResults() {
     toggleBtn.addEventListener('click', () => {
       allFilesVisible = !allFilesVisible;
       toggleBtn.innerHTML = allFilesVisible
-        ? '📋 הסתר קבצים'
-        : '📋 הצג את כל הקבצים';
+        ? '📋 Hide Files'
+        : '📋 Show All Files';
       document.querySelectorAll('.category-files').forEach(el => {
         el.classList.toggle('hidden', !allFilesVisible);
       });
@@ -125,7 +125,7 @@ function showResults() {
     });
   }
   allFilesVisible = false;
-  toggleBtn.innerHTML = '📋 הצג את כל הקבצים';
+  toggleBtn.innerHTML = '📋 Show All Files';
 
   // Category cards
   const grid = $('categories-grid');
@@ -245,7 +245,7 @@ function renderFileList(container, files, limit) {
   if (files.length > limit) {
     const btn = document.createElement('button');
     btn.className = 'show-more-btn';
-    btn.textContent = `הצג עוד ${Math.min(FILE_LIST_PAGE_SIZE, files.length - limit)} מתוך ${files.length - limit} נוספים`;
+    btn.textContent = `Show ${Math.min(FILE_LIST_PAGE_SIZE, files.length - limit)} more of ${files.length - limit} remaining`;
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       renderFileList(container, files, limit + FILE_LIST_PAGE_SIZE);
@@ -285,13 +285,13 @@ function renderExtensionFilters() {
 
   const label = document.createElement('span');
   label.className = 'ext-filters-label';
-  label.textContent = 'מחק כפילויות לפי סוג:';
+  label.textContent = 'Delete duplicates by type:';
   container.appendChild(label);
 
   for (const [ext, info] of sorted) {
     const btn = document.createElement('button');
     btn.className = 'ext-filter-btn';
-    btn.innerHTML = `${escapeHtml(ext.toUpperCase())} <small>(${info.count} קבצים, ${formatSize(info.size)})</small>`;
+    btn.innerHTML = `${escapeHtml(ext.toUpperCase())} <small>(${info.count} files, ${formatSize(info.size)})</small>`;
     btn.addEventListener('click', () => deleteByExtension(ext));
     container.appendChild(btn);
   }
@@ -317,9 +317,9 @@ async function deleteByExtension(ext) {
   }
 
   const confirmed = await window.api.confirmDialog({
-    title: `מחיקת כפילויות ${ext.toUpperCase()}`,
-    message: `למחוק ${paths.length} קבצי ${ext.toUpperCase()} כפולים?`,
-    detail: `ישמר עותק מקורי אחד מכל קבוצה.\nפעולה זו תשחרר ${formatSize(totalSize)} של מקום.\n\nהקבצים יועברו לפח המחזור.`,
+    title: `Delete ${ext.toUpperCase()} Duplicates`,
+    message: `Delete ${paths.length} duplicate ${ext.toUpperCase()} files?`,
+    detail: `One original copy will be kept from each group.\nThis will free up ${formatSize(totalSize)} of space.\n\nFiles will be moved to the Recycle Bin.`,
   });
   if (!confirmed) {
     isOperationRunning = false;
@@ -348,9 +348,9 @@ async function deleteByExtension(ext) {
       $('duplicates-section').classList.add('hidden');
     }
 
-    alert(`✅ נמחקו ${result.deleted} קבצי ${ext.toUpperCase()} כפולים! שוחרר ${formatSize(result.freedSpace)}`);
+    alert(`✅ Deleted ${result.deleted} duplicate ${ext.toUpperCase()} files! Freed ${formatSize(result.freedSpace)}`);
   } catch (err) {
-    alert('שגיאה במחיקה: ' + err.message);
+    alert('Delete error: ' + err.message);
     isOperationRunning = false;
   }
   isOperationRunning = false;
@@ -369,7 +369,7 @@ function renderDuplicates() {
   // Show summary of potential space savings
   const savingsNote = document.createElement('div');
   savingsNote.style.cssText = 'color: var(--warning); font-size: 14px; margin-bottom: 12px; font-weight: 600;';
-  savingsNote.textContent = `💡 מחיקת כל הכפילויות תשחרר ${formatSize(totalDupSize)}`;
+  savingsNote.textContent = `💡 Deleting all duplicates will free ${formatSize(totalDupSize)}`;
   dupList.appendChild(savingsNote);
 
   // Show paginated duplicate groups
@@ -382,7 +382,7 @@ function renderDuplicates() {
     const header = document.createElement('div');
     header.className = 'duplicate-group-header';
     header.innerHTML = `
-      <span>${dup.files.length} קבצים כפולים (${formatSize(dup.size)} כ"א)</span>
+      <span>${dup.files.length} duplicate files (${formatSize(dup.size)} each)</span>
       <span style="color: var(--text-secondary); font-size: 12px;">hash: ${escapeHtml(dup.hash.substring(0, 8))}...</span>
     `;
     group.appendChild(header);
@@ -397,7 +397,7 @@ function renderDuplicates() {
       // Open folder button (for all files)
       const openBtn = document.createElement('button');
       openBtn.className = 'open-folder-btn';
-      openBtn.title = 'פתח בסייר';
+      openBtn.title = 'Open in Explorer';
       openBtn.textContent = '📂';
       openBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -408,7 +408,7 @@ function renderDuplicates() {
       if (isFirst) {
         const badge = document.createElement('span');
         badge.className = 'original-badge';
-        badge.textContent = 'שמור ✓';
+        badge.textContent = 'Keep ✓';
 
         const pathSpan = document.createElement('span');
         pathSpan.className = 'duplicate-file-path';
@@ -456,7 +456,7 @@ function renderDuplicates() {
 
     const loadMoreBtn = document.createElement('button');
     loadMoreBtn.className = 'btn btn-secondary btn-small';
-    loadMoreBtn.innerHTML = `<span class="btn-icon">📄</span> טען ${Math.min(50, remaining)} נוספים (מתוך ${remaining})`;
+    loadMoreBtn.innerHTML = `<span class="btn-icon">📄</span> Load ${Math.min(50, remaining)} more (of ${remaining})`;
     loadMoreBtn.addEventListener('click', () => {
       duplicatesShown += 50;
       renderDuplicates();
@@ -464,7 +464,7 @@ function renderDuplicates() {
 
     const loadAllBtn = document.createElement('button');
     loadAllBtn.className = 'btn btn-secondary btn-small';
-    loadAllBtn.innerHTML = `<span class="btn-icon">📋</span> טען את כולם (${remaining})`;
+    loadAllBtn.innerHTML = `<span class="btn-icon">📋</span> Load all (${remaining})`;
     loadAllBtn.addEventListener('click', () => {
       duplicatesShown = Infinity;
       renderDuplicates();
@@ -519,12 +519,12 @@ $('btn-delete-all-dups').addEventListener('click', async () => {
   const totalGroups = scanResults.duplicates.length;
   const shownGroups = Math.min(50, totalGroups);
   const hiddenGroups = totalGroups - shownGroups;
-  const hiddenWarning = hiddenGroups > 0 ? `\nשים לב: ${hiddenGroups} קבוצות כפילויות לא מוצגות ברשימה וגם יימחקו!` : '';
+  const hiddenWarning = hiddenGroups > 0 ? `\nNote: ${hiddenGroups} duplicate groups not shown in the list will also be deleted!` : '';
 
   const confirmed = await window.api.confirmDialog({
-    title: 'מחיקת כל הכפילויות',
-    message: `למחוק ${allDupPaths.length} קבצים כפולים?`,
-    detail: `ישמר עותק מקורי אחד מכל קבוצה.\nפעולה זו תשחרר ${formatSize(totalFreedSize)} של מקום.\n\nלא ניתן לבטל פעולה זו!${hiddenWarning}`,
+    title: 'Delete All Duplicates',
+    message: `Delete ${allDupPaths.length} duplicate files?`,
+    detail: `One original copy will be kept from each group.\nThis will free up ${formatSize(totalFreedSize)} of space.\n\nThis action cannot be undone!${hiddenWarning}`,
   });
 
   if (!confirmed) {
@@ -532,10 +532,10 @@ $('btn-delete-all-dups').addEventListener('click', async () => {
     return;
   }
 
-  btn.innerHTML = '<span class="btn-icon">⏳</span> מוחק...';
+  btn.innerHTML = '<span class="btn-icon">⏳</span> Deleting...';
 
   window.api.onDeleteProgress((data) => {
-    btn.innerHTML = `<span class="btn-icon">⏳</span> מוחק... ${data.deleted}/${data.total}`;
+    btn.innerHTML = `<span class="btn-icon">⏳</span> Deleting... ${data.deleted}/${data.total}`;
   });
 
   try {
@@ -546,11 +546,11 @@ $('btn-delete-all-dups').addEventListener('click', async () => {
     resultDiv.className = `delete-result ${result.errors.length === 0 ? 'success' : 'error'}`;
 
     if (result.errors.length === 0) {
-      resultDiv.innerHTML = `✅ נמחקו ${result.deleted} כפילויות בהצלחה! שוחרר ${formatSize(result.freedSpace)}`;
+      resultDiv.innerHTML = `✅ Successfully deleted ${result.deleted} duplicates! Freed ${formatSize(result.freedSpace)}`;
     } else {
       resultDiv.innerHTML = `
-        נמחקו ${result.deleted} קבצים (שוחרר ${formatSize(result.freedSpace)}).<br>
-        ${result.errors.length} שגיאות במחיקה.
+        Deleted ${result.deleted} files (freed ${formatSize(result.freedSpace)}).<br>
+        ${result.errors.length} errors during deletion.
       `;
     }
 
@@ -581,12 +581,12 @@ $('btn-delete-all-dups').addEventListener('click', async () => {
     }, 2000);
 
   } catch (err) {
-    alert('שגיאה במחיקה: ' + err.message);
+    alert('Delete error: ' + err.message);
   }
 
   // Reset button
   btn.disabled = false;
-  btn.innerHTML = '<span class="btn-icon">🗑️</span> מחק את כל הכפילויות';
+  btn.innerHTML = '<span class="btn-icon">🗑️</span> Delete All Duplicates';
 });
 
 // ===== Delete Selected Duplicates =====
@@ -609,9 +609,9 @@ $('btn-delete-selected').addEventListener('click', async () => {
 
   // Confirm
   const confirmed = await window.api.confirmDialog({
-    title: 'אישור מחיקת כפילויות',
-    message: `למחוק ${count} קבצים כפולים?`,
-    detail: `פעולה זו תשחרר ${formatSize(freedSize)} של מקום.\nלא ניתן לבטל פעולה זו!`,
+    title: 'Confirm Duplicate Deletion',
+    message: `Delete ${count} duplicate files?`,
+    detail: `This will free up ${formatSize(freedSize)} of space.\nThis action cannot be undone!`,
   });
 
   if (!confirmed) {
@@ -625,7 +625,7 @@ $('btn-delete-selected').addEventListener('click', async () => {
 
   window.api.onDeleteProgress((data) => {
     const btnText = $('btn-delete-selected').lastChild;
-    if (btnText) btnText.textContent = ` מוחק... ${data.deleted}/${data.total}`;
+    if (btnText) btnText.textContent = ` Deleting... ${data.deleted}/${data.total}`;
   });
 
   try {
@@ -636,11 +636,11 @@ $('btn-delete-selected').addEventListener('click', async () => {
     resultDiv.className = `delete-result ${result.errors.length === 0 ? 'success' : 'error'}`;
 
     if (result.errors.length === 0) {
-      resultDiv.innerHTML = `✅ נמחקו ${result.deleted} קבצים בהצלחה! שוחרר ${formatSize(result.freedSpace)}`;
+      resultDiv.innerHTML = `✅ Successfully deleted ${result.deleted} duplicates! Freed ${formatSize(result.freedSpace)}`;
     } else {
       resultDiv.innerHTML = `
-        נמחקו ${result.deleted} קבצים (שוחרר ${formatSize(result.freedSpace)}).<br>
-        ${result.errors.length} שגיאות במחיקה.
+        Deleted ${result.deleted} files (freed ${formatSize(result.freedSpace)}).<br>
+        ${result.errors.length} errors during deletion.
       `;
     }
 
@@ -674,7 +674,7 @@ $('btn-delete-selected').addEventListener('click', async () => {
     }, 1500);
 
   } catch (err) {
-    alert('שגיאה במחיקה: ' + err.message);
+    alert('Delete error: ' + err.message);
   }
 
   // Reset button
@@ -738,12 +738,12 @@ $('btn-organize').addEventListener('click', async () => {
   const mode = document.querySelector('input[name="organize-mode"]:checked').value;
 
   if (sourcePath === destPath) {
-    alert('שגיאה: תיקיית המקור והיעד זהות! בחר תיקיית יעד אחרת.');
+    alert('Error: Source and destination folders are the same! Please select a different destination.');
     isOperationRunning = false;
     return;
   }
   if (destPath.startsWith(sourcePath + '\\') || destPath.startsWith(sourcePath + '/')) {
-    alert('שגיאה: תיקיית היעד נמצאת בתוך תיקיית המקור! בחר תיקיית יעד אחרת.');
+    alert('Error: Destination is inside the source folder! Please select a different destination.');
     isOperationRunning = false;
     return;
   }
@@ -752,9 +752,9 @@ $('btn-organize').addEventListener('click', async () => {
 
   if (mode === 'move') {
     const confirmed = await window.api.confirmDialog({
-      title: 'אישור העברת קבצים',
-      message: `להעביר ${allFiles.length} קבצים לתיקיית היעד?`,
-      detail: `הקבצים יועברו מ:\n${sourcePath}\nאל:\n${destPath}\n\nהקבצים המקוריים יוסרו מהמיקום הנוכחי!`,
+      title: 'Confirm File Move',
+      message: `Move ${allFiles.length} files to destination?`,
+      detail: `Files will be moved from:\n${sourcePath}\nTo:\n${destPath}\n\nOriginal files will be removed from their current location!`,
     });
     if (!confirmed) {
       isOperationRunning = false;
@@ -768,7 +768,7 @@ $('btn-organize').addEventListener('click', async () => {
     const percent = Math.round((data.moved / data.total) * 100);
     $('organize-progress-bar').style.width = percent + '%';
     $('organize-count').textContent = `${data.moved} / ${data.total}`;
-    $('organize-status').textContent = data.current || 'מעביר קבצים...';
+    $('organize-status').textContent = data.current || 'Moving files...';
   });
 
   try {
@@ -780,7 +780,7 @@ $('btn-organize').addEventListener('click', async () => {
 
     showDone(result, mode);
   } catch (err) {
-    alert('שגיאה בארגון: ' + err.message);
+    alert('Organize error: ' + err.message);
     showStep('results');
     isOperationRunning = false;
   }
@@ -793,10 +793,10 @@ function showDone(result, mode) {
 
   const summary = $('done-summary');
   summary.innerHTML = `
-    <p>קבצים ${mode === 'copy' ? 'הועתקו' : 'הועברו'}: <span>${result.moved}</span></p>
-    ${result.skipped > 0 ? `<p>דולגו (לא מזוהים): <span>${result.skipped}</span></p>` : ''}
-    ${result.errors.length > 0 ? `<p>שגיאות: <span style="color: var(--danger)">${result.errors.length}</span></p>` : ''}
-    <p>תיקיית יעד: <span style="font-size: 12px; direction: ltr">${escapeHtml(destPath)}</span></p>
+    <p>Files ${mode === 'copy' ? 'copied' : 'moved'}: <span>${result.moved}</span></p>
+    ${result.skipped > 0 ? `<p>Skipped (unrecognized): <span>${result.skipped}</span></p>` : ''}
+    ${result.errors.length > 0 ? `<p>Errors: <span style="color: var(--danger)">${result.errors.length}</span></p>` : ''}
+    <p>Destination: <span style="font-size: 12px; direction: ltr">${escapeHtml(destPath)}</span></p>
   `;
 }
 

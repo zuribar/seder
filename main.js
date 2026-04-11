@@ -13,7 +13,7 @@ function createWindow() {
     height: 800,
     minWidth: 900,
     minHeight: 600,
-    title: 'סדר - מנהל מדיה',
+    title: 'SortBox - Media Organizer',
     icon: path.join(__dirname, 'src', 'icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -40,31 +40,31 @@ app.on('activate', () => {
 // ===== File type categories =====
 const FILE_CATEGORIES = {
   videos: {
-    name: 'וידאו',
+    name: 'Video',
     nameEn: 'Videos',
     extensions: ['.mp4', '.mov', '.avi', '.mkv', '.wmv', '.flv', '.webm', '.m4v', '.mpg', '.mpeg', '.ts', '.vob', '.3gp'],
     icon: '🎬',
   },
   images: {
-    name: 'תמונות',
+    name: 'Images',
     nameEn: 'Images',
     extensions: ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.tif', '.webp', '.svg', '.ico', '.raw', '.cr2', '.nef', '.dng', '.heic', '.heif'],
     icon: '🖼️',
   },
   graphics: {
-    name: 'גרפיקה',
+    name: 'Graphics',
     nameEn: 'Graphics',
     extensions: ['.psd', '.ai', '.eps', '.indd', '.sketch', '.fig', '.xd', '.cdr'],
     icon: '🎨',
   },
   audio: {
-    name: 'אודיו',
+    name: 'Audio',
     nameEn: 'Audio',
     extensions: ['.mp3', '.wav', '.aac', '.flac', '.ogg', '.m4a', '.wma', '.aiff', '.aif', '.mid', '.midi'],
     icon: '🎵',
   },
   projects: {
-    name: 'פרויקטים',
+    name: 'Projects',
     nameEn: 'Projects',
     extensions: ['.aep', '.aet', '.prproj', '.drp', '.nk', '.comp', '.mogrt', '.sesx', '.als', '.flp', '.ptx'],
     icon: '📁',
@@ -76,25 +76,25 @@ const FILE_CATEGORIES = {
     icon: '🧊',
   },
   plugins: {
-    name: 'פלאגינים',
+    name: 'Plugins',
     nameEn: 'Plugins',
     extensions: ['.dll', '.vst', '.vst3', '.component', '.aex', '.ofx', '.8bf', '.plugin', '.bundle'],
     icon: '🔌',
   },
   fonts: {
-    name: 'פונטים',
+    name: 'Fonts',
     nameEn: 'Fonts',
     extensions: ['.ttf', '.otf', '.woff', '.woff2', '.eot', '.fon'],
     icon: '🔤',
   },
   documents: {
-    name: 'מסמכים',
+    name: 'Documents',
     nameEn: 'Documents',
     extensions: ['.pdf', '.doc', '.docx', '.txt', '.rtf', '.xls', '.xlsx', '.ppt', '.pptx', '.csv'],
     icon: '📄',
   },
   archives: {
-    name: 'ארכיונים',
+    name: 'Archives',
     nameEn: 'Archives',
     extensions: ['.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz', '.iso', '.dmg'],
     icon: '📦',
@@ -106,7 +106,7 @@ const FILE_CATEGORIES = {
     icon: '🎛️',
   },
   presets: {
-    name: 'פריסטים',
+    name: 'Presets',
     nameEn: 'Presets',
     extensions: ['.ffx', '.sfl', '.xmp', '.lrtemplate'],
     icon: '⚙️',
@@ -129,7 +129,7 @@ function getCategory(filePath) {
 ipcMain.handle('select-folder', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory'],
-    title: 'בחר תיקייה לסריקה',
+    title: 'Select a folder to scan',
   });
   if (result.canceled) return null;
   return result.filePaths[0];
@@ -139,7 +139,7 @@ ipcMain.handle('select-folder', async () => {
 ipcMain.handle('select-destination', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory', 'createDirectory'],
-    title: 'בחר תיקיית יעד לארגון',
+    title: 'Select destination folder',
   });
   if (result.canceled) return null;
   return result.filePaths[0];
@@ -211,7 +211,7 @@ ipcMain.handle('scan-folder', async (event, folderPath) => {
             size: stat.size,
             modified: stat.mtime,
             category: category ? category.key : 'unknown',
-            categoryName: category ? category.name : 'לא מזוהה',
+            categoryName: category ? category.name : 'Unknown',
             icon: category ? category.icon : '❓',
           };
 
@@ -464,14 +464,14 @@ ipcMain.handle('delete-duplicates', async (event, filePaths) => {
 ipcMain.handle('confirm-dialog', async (event, { title, message, detail }) => {
   const result = await dialog.showMessageBox(mainWindow, {
     type: 'warning',
-    buttons: ['ביטול', 'מחק'],
+    buttons: ['Cancel', 'Delete'],
     defaultId: 0,
     cancelId: 0,
-    title: title || 'אישור מחיקה',
-    message: message || 'האם אתה בטוח?',
+    title: title || 'Confirm Deletion',
+    message: message || 'Are you sure?',
     detail: detail || '',
   });
-  return result.response === 1; // true if "מחק" was clicked
+  return result.response === 1; // true if "Delete" was clicked
 });
 
 // Get categories info

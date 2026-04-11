@@ -1,72 +1,65 @@
-# סדר - מנהל מדיה אוטומטי
+# SortBox
 
 <div align="center">
 
-**סדר** הוא כלי שולחני חינמי לארגון וניקוי קבצי מדיה — מיועד ל-VJs, עורכי וידאו, מעצבים ויוצרי תוכן.
+**SortBox** is a free desktop tool for organizing and cleaning up media files — built for VJs, video editors, designers, and content creators.
 
-סורק תיקיות (כולל דיסקים שלמים), מזהה כפילויות, ומארגן הכל אוטומטית לתיקיות מסודרות.
+Scan folders of any size (even entire drives), detect duplicates, and auto-organize everything into sorted folders.
 
 </div>
 
 ---
 
-## מה זה עושה
+## Features
 
-- **סריקה חכמה** — סורק תיקיות בכל גודל (נבדק על 4TB SSD) ומזהה 12+ קטגוריות קבצים: וידאו, תמונות, אודיו, 3D, פונטים, LUTs, פרויקטים ועוד
-- **זיהוי כפילויות** — מזהה קבצים כפולים לפי hash (SHA-256) ומאפשר מחיקה בטוחה לפח המחזור
-- **מחיקה לפי סוג** — מחק כפילויות רק מסוג מסוים (למשל רק .DXV או רק .MP4)
-- **ארגון אוטומטי** — העתקה או העברה של קבצים לתיקיות מסודרות לפי קטגוריה ופורמט
-- **תצוגת קבצים** — לחיצה על קטגוריה מציגה את כל הקבצים שבה, עם כפתור לפתיחה בסייר
-- **בטיחות** — מחיקה לפח מחזור (לא סופית), אישור לפני כל פעולה הרסנית, הגנת XSS ו-CSP
+- **Full Drive Scanning** — Scan folders of any size, including entire SSDs and hard drives with hundreds of thousands of files
+- **Smart File Detection** — Automatically identifies 12+ file categories: Video (MP4, MOV, AVI, MKV), Audio (MP3, WAV, FLAC), Images (JPG, PNG, PSD), 3D (OBJ, FBX, Blend), Fonts, LUTs, Presets, Project files, and more
+- **Duplicate Finder** — Detects duplicate files using SHA-256 hashing with a two-step verification (partial + full hash)
+- **Delete by File Type** — Remove duplicates of a specific format only (e.g., delete all duplicate .DXV files but keep .MP4 copies)
+- **Safe Deletion** — All deletions go to the Recycle Bin, never permanent
+- **Auto-Organize** — Copy or move files into neatly sorted folders by category and format
+- **Detailed File Browser** — Click any category to see all files inside, with pagination for large collections
+- **Open in Explorer** — Jump directly to any file's location with one click
+- **Live Summary** — File counts, sizes, and category stats update in real-time after every action
+- **Hebrew RTL Interface** — Full right-to-left Hebrew UI
 
-## התקנה
+## Download
 
-```bash
-git clone https://github.com/YOUR_USERNAME/seder.git
-cd seder
-npm install
-npm start
-```
+Go to [**Releases**](https://github.com/zuribar/seder/releases) and download:
+- **SortBox Setup** — Installer (recommended) — installs the app with a shortcut
+- **SortBox Portable** — No installation needed — just run the .exe
 
-### דרישות
-- Node.js 18+
-- npm
+## Supported File Types
 
-## צילומי מסך
+| Category | Formats |
+|----------|---------|
+| Video | MP4, MOV, AVI, MKV, WEBM, TS, FLV, and more |
+| Images | JPG, PNG, GIF, WEBP, RAW, HEIC, BMP, and more |
+| Graphics | PSD, AI, EPS, Sketch, Figma, XD, and more |
+| Audio | MP3, WAV, FLAC, AAC, OGG, M4A, and more |
+| Projects | AEP, PRPROJ, DRP, ALS, FLP, and more |
+| 3D | OBJ, FBX, Blend, C4D, GLTF, STL, and more |
+| Plugins | DLL, VST, VST3, AEX, OFX, and more |
+| Fonts | TTF, OTF, WOFF, WOFF2, and more |
+| Documents | PDF, DOCX, XLSX, PPTX, CSV, and more |
+| Archives | ZIP, RAR, 7Z, ISO, DMG, and more |
+| LUTs | CUBE, 3DL, LOOK, and more |
+| Presets | FFX, XMP, LRTemplate, and more |
 
-> הפעל את האפליקציה כדי לראות את הממשק — הכל בעברית עם תמיכה מלאה ב-RTL
+## Security
 
-## קטגוריות נתמכות
+- Electron Context Isolation + Sandbox enabled
+- Content Security Policy (CSP)
+- XSS protection on all dynamic content
+- IPC path validation on all file operations
+- Recycle Bin deletion only (never permanent)
 
-| קטגוריה | פורמטים |
-|---------|---------|
-| וידאו | MP4, MOV, AVI, MKV, WEBM, TS ועוד |
-| תמונות | JPG, PNG, GIF, WEBP, RAW, HEIC ועוד |
-| גרפיקה | PSD, AI, EPS, Sketch, Figma ועוד |
-| אודיו | MP3, WAV, FLAC, AAC, OGG ועוד |
-| פרויקטים | AEP, PRPROJ, DRP, ALS, FLP ועוד |
-| 3D | OBJ, FBX, Blend, C4D, GLTF ועוד |
-| פלאגינים | DLL, VST, VST3, AEX ועוד |
-| פונטים | TTF, OTF, WOFF, WOFF2 ועוד |
-| מסמכים | PDF, DOCX, XLSX, PPTX ועוד |
-| ארכיונים | ZIP, RAR, 7Z, ISO, DMG ועוד |
-| LUTs | CUBE, 3DL, LOOK ועוד |
-| פריסטים | FFX, XMP, LRTemplate ועוד |
-
-## אבטחה
-
-- Context Isolation + Sandbox מופעלים
-- Content Security Policy
-- הגנת XSS על כל תוכן דינמי
-- וולידציית נתיבים בכל פעולת IPC
-- מחיקה לפח מחזור בלבד (לא סופית)
-
-## טכנולוגיה
+## Built With
 
 - [Electron](https://www.electronjs.org/) 28
-- Vanilla JavaScript (ללא frameworks)
-- עיצוב דארק מודרני
+- Vanilla JavaScript (no frameworks)
+- Modern dark theme UI
 
-## רישיון
+## License
 
-MIT — חינמי לשימוש, שינוי והפצה.
+MIT — free to use, modify, and distribute.

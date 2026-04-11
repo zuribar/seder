@@ -1,7 +1,7 @@
 {
-  "name": "seder-media-organizer",
+  "name": "sortbox",
   "version": "1.0.0",
-  "description": "Media Asset Organizer for VJs - סדר מדיה",
+  "description": "SortBox - Media file organizer for VJs, video editors, and content creators",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -10,8 +10,8 @@
     "build:portable": "electron-builder --win portable"
   },
   "build": {
-    "appId": "com.seder.media-organizer",
-    "productName": "Seder",
+    "appId": "com.sortbox.media-organizer",
+    "productName": "SortBox",
     "copyright": "Copyright © 2026",
     "win": {
       "target": [
@@ -29,7 +29,7 @@
     "nsis": {
       "oneClick": true,
       "allowToChangeInstallationDirectory": false,
-      "shortcutName": "Seder"
+      "shortcutName": "SortBox"
     },
     "files": [
       "main.js",
